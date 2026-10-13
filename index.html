@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avenir+ – Test d'orientation</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--card:#f4f6f3;--ac:#e8730c;--gr:#1a8a4a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151815;--fg:#f0f0f0;--mut:#a0a0a0;--card:#22271f}}
+:root[data-theme="dark"]{--bg:#151815;--fg:#f0f0f0;--mut:#a0a0a0;--card:#22271f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif;line-height:1.45}
+main{max-width:520px;margin:0 auto;padding:20px 16px}
+h1{font-size:1.5rem;margin:0 0 6px}h2{font-size:1.2rem}p{color:var(--mut)}
+.bar{height:6px;background:var(--card);border-radius:3px;margin:16px 0}.bar i{display:block;height:100%;background:var(--gr);border-radius:3px;transition:width .3s}
+button{font:inherit;width:100%;padding:14px;margin:6px 0;border:1px solid var(--card);background:var(--card);color:var(--fg);border-radius:12px;cursor:pointer;text-align:left}
+button.p{background:var(--ac);color:#fff;text-align:center;font-weight:600;border:0}
+button:active{transform:scale(.98)}
+.row{margin:12px 0}.row b{display:flex;justify-content:space-between}.row .bar{margin:4px 0;height:10px}
+.row .bar i{background:var(--ac)}
+.q{font-size:1.2rem;font-weight:600;margin:20px 0}
+.note{font-size:.8rem}.wab{display:block;text-align:center;text-decoration:none;padding:14px;margin:6px 0;border-radius:12px;background:#25D366;color:#fff;font-weight:600}
+input,select{font:inherit;width:100%;padding:12px;margin:4px 0 10px;border:1px solid var(--card);background:var(--card);color:var(--fg);border-radius:10px}label{font-size:.9rem;color:var(--mut)}details{background:var(--card);border-radius:12px;padding:10px 14px;margin:10px 0}summary{cursor:pointer;font-weight:600}li{margin:6px 0}.w{color:#c0392b}.err{color:#c0392b;font-size:.9rem}</style></head><body><main id="app"></main>
+<script>
+const F={med:"Médecine & Santé",dro:"Droit & Sciences politiques",eco:"Économie & Gestion",com:"Communication & Journalisme",mar:"Marketing & Commerce",inf:"Informatique",gen:"Génie civil & Mines",agr:"Agronomie & Élevage",let:"Lettres & Enseignement"};
+const Q=[
+["J'aime aider et soigner les gens",{med:3,let:1}],
+["J'aime débattre et défendre des idées",{dro:3,com:2}],
+["Je suis à l'aise avec les chiffres et les budgets",{eco:3,mar:1,inf:1}],
+["J'aime écrire, parler en public ou présenter",{com:3,let:2,dro:1}],
+["J'aime vendre, négocier, convaincre",{mar:3,eco:1,com:1}],
+["J'aime les ordinateurs et les problèmes de logique",{inf:3,gen:1}],
+["J'aime construire, mesurer, concevoir des ouvrages",{gen:3,inf:1}],
+["J'aime la nature, la terre et les animaux",{agr:3,med:1}],
+["J'aime transmettre mes connaissances",{let:3,com:1}],
+["Je veux créer ma propre entreprise un jour",{mar:2,eco:2,agr:1}],
+["Je supporte bien le stress et les grandes responsabilités",{med:2,dro:1,gen:1}],
+["Je m'intéresse à l'actualité et à la politique",{com:2,dro:2,eco:1}],
+["Je préfère le terrain au bureau",{agr:2,gen:2,med:1}],
+["J'aime lire, l'histoire et les langues",{let:3,dro:1,com:1}]];
+const S={mat:"Maths",fra:"Français",sci:"Sciences (SVT/Physique-Chimie)",hg:"Histoire-Géo",phi:"Philosophie",ang:"Anglais",ara:"Arabe / Langues vivantes",eco:"Économie / Comptabilité",cmm:"Commerce / Marketing",bur:"Secrétariat / Bureautique",tec:"Technologie / Dessin industriel",mec:"Construction mécanique",ele:"Électricité / Électronique",bat:"Bâtiment / Travaux publics"};
+const SER={A4:{n:"A4 – Philosophie-Lettres",s:["fra","phi","hg","ang"]},A8:{n:"A8 – Littéraire (langues vivantes, franco-arabe)",s:["fra","phi","hg","ang","ara"]},C:{n:"C – Maths & Sciences physiques",s:["mat","sci","fra","hg","ang"]},D:{n:"D – Sciences expérimentales",s:["sci","mat","fra","hg","ang"]},E:{n:"E – Maths & Techniques",s:["mat","tec","sci","fra","ang"]},G1:{n:"G1 – Secrétariat & Bureautique",s:["bur","fra","eco","ang"]},G2:{n:"G2 – Comptabilité & Gestion",s:["eco","mat","fra","ang"]},G3:{n:"G3 – Commerce & Marketing",s:["cmm","eco","fra","ang","mat"]},F1:{n:"F1 – Construction mécanique",s:["mat","mec","sci","fra","ang"]},F2:{n:"F2 – Électronique",s:["mat","ele","sci","fra","ang"]},F3:{n:"F3 – Électrotechnique",s:["mat","ele","sci","fra","ang"]},F4:{n:"F4 – Génie civil / BTP",s:["mat","bat","sci","fra","ang"]}};
+const W={med:{sci:3,mat:1},dro:{fra:2,hg:2,phi:2,ara:1},eco:{mat:3,hg:1,eco:3},com:{fra:3,ang:1,phi:1,bur:1},mar:{mat:1,fra:1,ang:1,eco:2,cmm:3},inf:{mat:3,ang:1,ele:1,bur:1},gen:{mat:3,sci:2,tec:2,mec:2,ele:2,bat:3},agr:{sci:3},let:{fra:3,hg:2,ang:1,phi:2,ara:1}};
+const SEL=["med","gen","inf"];
+const CDE="C D E";
+const FIL={
+med:[["Médecine générale",CDE],["Pharmacie",CDE],["Chirurgie dentaire",CDE],["Soins infirmiers (IDE)",CDE],["Sage-femme d'État",CDE],["Techniques de laboratoire / Biologie médicale",CDE],["Santé publique & Nutrition",CDE],["Imagerie médicale",CDE]],
+dro:[["Droit privé","L"],["Droit public","L"],["Fiscalité / Carrières juridiques","L"],["Sciences politiques","L"]],
+eco:[["Économie",CDE],["Comptabilité et gestion des entreprises","G2 G3 C D E"],["Banque, finance et assurance","G2 C D E"],["Audit et contrôle de gestion","G2 C D E"],["Administration et gestion des organisations","all"],["Gestion des ressources humaines","L G1"]],
+mar:[["Gestion commerciale et marketing","G3 C D E"],["Marketing digital et e-commerce","all"],["Commerce international","G3 C D E"],["Transport et logistique","all"]],
+com:[["Journalisme (presse, audiovisuel)","all"],["Communication des entreprises","all"],["Métiers du multimédia","L"],["Secrétariat de direction / Assistanat de gestion","L G1"],["Archives, bibliothèque, documentation (IFTIC)","L G1"]],
+inf:[["Informatique de gestion","C D E F G"],["Génie logiciel",CDE+" F"],["Cybersécurité",CDE+" F"],["Réseaux et télécommunications",CDE+" F"],["Maintenance informatique, électronique et robotique","E F"]],
+gen:[["Génie civil (bâtiment, topographie)","C E F"],["Génie électrique / Électrotechnique","C E F2 F3"],["Électromécanique et maintenance industrielle","C E F"],["Génie mécanique","C E F1"],["Énergies renouvelables (solaire)","C D E F"],["Pétrole, mines et géologie","C D E F"],["Géomatique, SIG et topographie","C D E F"]],
+agr:[["Production végétale et animale",CDE],["Génie rural, eaux et forêts",CDE],["Technologies agroalimentaires",CDE],["Environnement et aménagement du territoire",CDE]],
+let:[["Lettres modernes","L"],["Langues (anglais, arabe, espagnol)","L"],["Histoire-Géographie, Sociologie, Psychologie","L"],["Sciences de l'éducation / Enseignement (ENS)","L D C"],["Didactique des sciences",CDE],["Tourisme et hôtellerie","L G"]]};
+function can(t){return t=="all"||t==ser||(t=="L"&&/^A/.test(ser))||(t=="F"&&/^F/.test(ser))||(t=="G"&&/^G/.test(ser))}
+const UP="Universités publiques régionales (Maradi, Tahoua, Dosso…), selon l'offre";
+const ETA={
+med:["Faculté des sciences de la santé – UAM Niamey","Écoles de santé publiques et privées agréées (concours ou dossier)"],
+dro:["Faculté des sciences économiques et juridiques – UAM Niamey",UP],
+eco:["UAM Niamey (économie et gestion)","CET-ASNI (BTS d'État, administration et gestion)","IAT Niamey (technique administrative, banque)"],
+mar:["CET-ASNI Niamey","IAT Niamey","Université de Dosso (DUT e-commerce / marketing digital)"],
+com:["IFTIC (archives, bibliothèque, documentation)","Université de Dosso (DUT communication)","CET-ASNI Niamey"],
+inf:["IAT Niamey","Université de Dosso (DUT cybercriminalité / protection des données)","UAM Niamey et IUT"],
+gen:["IAT Niamey (génie civil, électromécanique, installations électriques)","EMIG – École des Mines, de l'Industrie et de la Géologie","IUT et UAM Niamey"],
+agr:["Faculté d'agronomie – UAM Niamey",UP],
+let:["École normale supérieure (ENS)","IFMEN (métiers de l'enseignement)","Université de Tahoua (sciences de l'éducation)","Faculté des lettres – UAM Niamey"]};
+const DEB={
+med:"Médecin, pharmacien, infirmier, sage-femme, technicien de laboratoire, santé publique (hôpitaux, cliniques, ONG).",
+dro:"Avocat, magistrat, juriste d'entreprise, notaire, huissier, fonction publique, diplomatie, ONG.",
+eco:"Comptable, banquier, auditeur, gestionnaire, responsable RH, administration, création d'entreprise.",
+mar:"Commercial, responsable marketing, e-commerce, import-export, logistique et transport.",
+com:"Journaliste, chargé de communication, community manager, documentaliste, métiers du multimédia.",
+inf:"Développeur, administrateur réseaux, expert cybersécurité, technicien de maintenance, télécoms.",
+gen:"Conducteur de travaux, topographe, électricien industriel, technicien de maintenance, énergie solaire, pétrole et mines.",
+agr:"Ingénieur agronome, agro-industrie, élevage, gestion de l'environnement, projets de développement et ONG.",
+let:"Enseignant, traducteur, interprète, chercheur, tourisme et hôtellerie, culture."};
+function fl(k){return FIL[k].filter(f=>f[1].split(" ").some(can)).map(f=>f[0])}
+const L=["Pas du tout","Un peu","Moyen","Plutôt oui","Tout à fait"];
+const A=[];let i=-1,G={},bac=0,ter=0,ser="";const app=document.getElementById("app");
+let rid="",tops=[],fbk={},RES=[],demo=false,PH="";const WA="22789438924";
+async function save(){if(demo)return;try{const db=await claude.use("db");if(!db)return;await db.collection("responses").doc(rid).set({ts:new Date().toISOString(),serie:ser,bac,ter,notes:G,reponses:A,top:tops,avis:fbk.f1||"",paiement:fbk.f2||""})}catch(e){}}
+function waUrl(){return "https://wa.me/"+WA+"?text="+encodeURIComponent("Avenir+ | Série "+ser+" | Bac "+bac+"/20 | Résultats : "+tops.join(", ")+" | Avis : "+(fbk.f1||"-")+" | Paierait : "+(fbk.f2||"-"))}
+function start(){fbk={};demo=false;i=-1;A.length=0;app.innerHTML=`<h1>🎓 Avenir+</h1><p>Bachelier ? Lis bien chaque question avant de répondre : tu pourras revenir à la question précédente si tu te trompes. Réponds à ${Q.length} questions, indique tes notes (terminale et bac), et découvre les filières qui te correspondent, avec les raisons.</p><button class="p" onclick="next()">Commencer le test</button><button onclick="demoRun()">👀 Voir un exemple d'analyse complète</button>`}
+function back(){A.pop();i-=2;next()}
+function next(v){if(v!==undefined)A.push(v);i++;if(i>=Q.length)return serie();
+app.innerHTML=`<div class="bar"><i style="width:${i/Q.length*100}%"></i></div><p>Question ${i+1}/${Q.length} · Lis bien avant de répondre</p><div class="q">${Q[i][0]}</div>`+L.map((t,k)=>`<button onclick="next(${k+1})">${t}</button>`).join("")+(i>0?`<button onclick="back()">← Question précédente</button>`:"")}
+function serie(){app.innerHTML=`<div class="bar"><i style="width:100%"></i></div><h2>Ta série du bac</h2><p>Choisis ta série : on te demandera ensuite les notes des matières que tu as étudiées.</p>`+Object.keys(SER).map(k=>`<button onclick="ser='${k}';showForm()">${SER[k].n}</button>`).join("")}
+function showForm(){app.innerHTML=`<div class="bar"><i style="width:100%"></i></div><h2>Tes notes</h2><p>Sur 20. Utilise ta moyenne de l'année de terminale et tes notes au bac.</p>
+<label>Moyenne générale au bac</label><input id="bac" inputmode="decimal" placeholder="ex : 12.5">
+<label>Moyenne générale en terminale</label><input id="ter" inputmode="decimal" placeholder="ex : 11.8">`+SER[ser].s.map(k=>`${ser=="A4"&&k=="ang"?'<label>Langue vivante étudiée</label><select id="lv"><option value="ang">Anglais</option><option value="ara">Arabe</option></select>':""}<label>Note au bac en ${ser=="A4"&&k=="ang"?"cette langue vivante":S[k]}</label><input id="n_${k}" inputmode="decimal" placeholder="ex : 14">`).join("")+`<div id="err" class="err"></div><button class="p" onclick="grades()">Voir mes résultats</button>`}
+function val(id){const v=parseFloat(document.getElementById(id).value.replace(",","."));return isNaN(v)||v<0||v>20?null:v}
+function grades(){const b=val("bac"),t=val("ter"),g={};let ok=b!==null&&t!==null;SER[ser].s.forEach(k=>{g[k]=val("n_"+k);if(g[k]===null)ok=false});
+if(!ok){document.getElementById("err").textContent="Remplis toutes les cases avec des notes entre 0 et 20.";return}
+if(ser=="A4"&&document.getElementById("lv").value=="ara"){g.ara=g.ang;delete g.ang}bac=b;ter=t;G=g;result()}
+function result(){const s={},m={};for(const k in F)s[k]=m[k]=0;
+Q.forEach((q,n)=>{for(const k in q[1]){s[k]+=A[n]*q[1][k];m[k]+=5*q[1][k]}});
+const r=Object.keys(F).map(k=>{const it=s[k]/m[k];let ws=0,sw=0;for(const x in W[k])if(G[x]!==undefined){ws+=G[x]/20*W[k][x];sw+=W[k][x]}
+const gr=(sw?0.6*(ws/sw):0.3*(bac/20)+0.3*(ter/20))+0.2*(bac/20)+0.2*(ter/20);return{k,p:Math.round(100*(0.7*it+0.3*gr)),i:Math.round(it*100),g:Math.round(gr*100)}}).filter(x=>fl(x.k).length).sort((a,b)=>b.p-a.p);
+RES=r;tops=r.slice(0,3).map(x=>F[x.k]+" "+x.p+"%");rid=Date.now().toString(36)+Math.random().toString(36).slice(2,6);save();app.innerHTML=`<h2>Tes filières compatibles</h2><p>70 % de tes envies + 30 % de tes notes.</p>`+r.slice(0,5).map((x,n)=>`<details ${n==0?"open":""}><summary>${F[x.k]} : ${x.p} %</summary><div class="bar"><i style="width:${x.p}%;background:var(--ac)"></i></div><p class="note">Envies ${x.i} % · Notes ${x.g} %</p><b>Filières accessibles avec ta série ${ser} :</b><ul>${fl(x.k).map(n=>"<li>"+n+"</li>").join("")}</ul><b>Débouchés :</b><p>${DEB[x.k]}</p><b>Où étudier au Niger :</b><ul>${ETA[x.k].map(n=>"<li>"+n+"</li>").join("")}</ul><b>Pourquoi ce domaine ?</b><ul>${why(x.k)}</ul></details>`).join("")+
+`<button class="p" onclick="premium()">📄 Voir l'analyse complète (aperçu)</button><h2>Ton avis compte</h2><p>Ce résultat te semble-t-il juste ?</p><div id="f1"><button onclick="fb(1,'Oui')">👍 Oui</button><button onclick="fb(1,'Moyennement')">🤔 Moyennement</button><button onclick="fb(1,'Non')">👎 Non</button></div>
+<p>Paierais-tu 1 000–2 000 FCFA pour une analyse complète (métiers, débouchés, écoles) ?</p><div id="f2"><button onclick="fb(2,'Oui')">Oui</button><button onclick="fb(2,'Peut-être')">Peut-être</button><button onclick="fb(2,'Non')">Non</button></div>
+${WA?`<a class="wab" href="${waUrl()}" onclick="this.href=waUrl()" target="_blank" rel="noopener">📲 Envoyer mes résultats sur WhatsApp</a>`:""}<button class="p" onclick="start()">Refaire le test</button><p class="note">Ces suggestions ne garantissent ni l'admission ni un emploi : vérifie les conditions d'admission auprès de chaque établissement. Méfie-toi des fausses offres : ne verse jamais d'argent pour des « frais de dossier ». Prototype : résultats indicatifs, tes réponses peuvent être enregistrées anonymement pour améliorer le test.</p>`}
+function why(k){const o=[];
+Q.map((q,n)=>[q[0],A[n],q[1][k]||0]).filter(x=>x[1]>=4&&x[2]>0).sort((a,b)=>b[1]*b[2]-a[1]*a[2]).slice(0,3).forEach(x=>o.push(`Tu as répondu « ${x[0]} » : ${L[x[1]-1].toLowerCase()}.`));
+Object.keys(W[k]).sort((a,b)=>W[k][b]-W[k][a]).forEach(x=>{if(G[x]>=12)o.push(`Ta note en ${S[x]} (${G[x]}/20) est un atout pour cette filière.`);else if(G[x]<10)o.push(`<span class="w">⚠️ Ta note en ${S[x]} (${G[x]}/20) est faible alors que cette filière en demande beaucoup : prévois du renforcement.</span>`)});
+if(SEL.includes(k)){if(bac>=12)o.push(`Ta moyenne au bac (${bac}/20) te donne de bonnes chances dans cette filière sélective.`);else if(bac<10)o.push(`<span class="w">⚠️ Filière sélective : ta moyenne au bac (${bac}/20) rend l'admission plus difficile.</span>`)}
+if(ter>=12&&bac>=12)o.push(`Tes bons résultats généraux (terminale ${ter}, bac ${bac}) montrent un bon niveau de travail.`);
+return o.length?o.map(x=>`<li>${x}</li>`).join(""):"<li>Compatibilité modérée : aucun point fort marqué dans tes réponses ou tes notes.</li>"}
+const MKT={med:"Besoin structurel de personnel de santé, surtout en zone rurale ; infirmier, sage-femme et technicien de laboratoire : insertions parmi les plus stables.",inf:"Secteur en expansion (informatique, données, IA) ; la géomatique / SIG est aussi très demandée.",gen:"BTP et hydraulique ≈ 15 % des offres formelles analysées ; géomatique / topographie très présente ; mines, pétrole et énergie recrutent ingénieurs, électromécaniciens et techniciens.",eco:"Administration, gestion de projet et RH très demandées dans les ONG et organisations humanitaires.",mar:"La logistique est recherchée par les ONG et organisations humanitaires."};
+function demoRun(){demo=true;ser="D";A.length=0;[5,3,4,2,3,5,3,2,2,3,4,3,3,2].forEach(v=>A.push(v));G={sci:15,mat:13,fra:11,hg:12,ang:9};bac=13;ter=12;result();premium()}
+function premium(){PH=app.innerHTML;const r=RES,t=r[0],ks=Object.keys(G);
+const li=a=>a.length?"<ul>"+a.map(x=>"<li>"+x+"</li>").join("")+"</ul>":"<p>Rien de particulier.</p>";
+const st=ks.filter(k=>G[k]>=12).sort((a,b)=>G[b]-G[a]).map(k=>S[k]+" ("+G[k]+"/20)"),wk=ks.filter(k=>G[k]<10).map(k=>S[k]+" ("+G[k]+"/20)");
+const lk=Q.map((q,n)=>[q[0],A[n]]).filter(x=>x[1]>=4).slice(0,4).map(x=>x[0]);
+const pb=r.slice(1,3).map(x=>"<b>"+F[x.k]+" ("+x.p+" %)</b> : "+fl(x.k).slice(0,3).join(", "));
+const msg=encodeURIComponent("Avenir+ : mes filières les plus compatibles : "+tops.join(", ")+". Série "+ser+", bac "+bac+"/20.");
+app.innerHTML=`<p class="note">APERÇU · Analyse complète (1 000 FCFA)</p><h1>Ton analyse complète</h1><p>Série ${ser} · Bac ${bac}/20 · Terminale ${ter}/20</p>
+<h2>1. Ton profil</h2><b>Tes points forts</b>${li(st)}<b>À renforcer</b>${li(wk)}<b>Ce que tu aimes</b>${li(lk)}
+<h2>2. Classement complet</h2>`+r.map(x=>`<div class="row"><b><span>${F[x.k]}</span><span>${x.p} %</span></b><div class="bar"><i style="width:${x.p}%"></i></div></div>`).join("")+
+`<h2>3. Ton domaine n°1 : ${F[t.k]}</h2><b>Filières accessibles</b>${li(fl(t.k))}<b>Où étudier</b>${li(ETA[t.k])}<b>Durées indicatives</b><p>BTS / DUT : 2 ans · Licence : 3 ans · Master : +2 ans. Conditions d'admission, frais et dates : à confirmer auprès de chaque établissement.</p>
+<b>Débouchés</b><p>${DEB[t.k]}</p>${MKT[t.k]?`<b>Marché de l'emploi</b><p>${MKT[t.k]}</p>`:""}
+<h2>4. Ton plan B</h2><p>Si tu n'as pas de place ou si tu échoues au concours :</p>${li(pb)}
+<h2>5. Ton plan d'action</h2><ol><li>Choisis 2 ou 3 filières dans ton classement et ton plan B.</li><li>Contacte les établissements pour confirmer les filières, le concours ou dossier, les frais et les dates d'inscription.</li><li>Prépare tes documents (en général : relevé de notes et attestation du bac, acte de naissance, photos). À confirmer avec l'établissement.</li><li>Prépare le concours ou ton dossier à l'avance.</li><li>Paie uniquement à l'établissement lui-même. Ne verse jamais de « frais de dossier » à un inconnu.</li></ol>
+<a class="wab" href="https://wa.me/?text=${msg}" target="_blank" rel="noopener">📲 Partager avec mes parents</a><button class="p" onclick="app.innerHTML=PH">← Retour aux résultats</button>
+<p class="note">Aperçu : les informations pratiques (admission, frais, dates) doivent être vérifiées avant la vente.</p>`;window.scrollTo(0,0)}
+function fb(n,v){document.getElementById("f"+n).innerHTML="<p>Merci ! ✅</p>";fbk["f"+n]=v;save()}
+start();
+</script></body></html>
